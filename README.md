@@ -3,9 +3,31 @@
 </p>
 
 <h1 align="center">DuwatBench</h1>
+<h3 align="center">دواة - معيار الخط العربي</h3>
 
 <p align="center">
   <b>Bridging Language and Visual Heritage through an Arabic Calligraphy Benchmark for Multimodal Understanding</b>
+</p>
+
+<p align="center">
+  <a href="#">Shubham Patle</a><sup>1*</sup>,
+  <a href="#">Sara Ghaboura</a><sup>1*</sup>,
+  <a href="#">Hania Tariq</a><sup>2</sup>,
+  <a href="#">Mohammad Usman Khan</a><sup>3</sup>,
+  <a href="https://omkarthawakar.github.io/">Omkar Thawakar</a><sup>1</sup>,
+  <a href="https://scholar.google.fi/citations?user=_KlvMVoAAAAJ&hl=en">Rao Muhammad Anwer</a><sup>1</sup>,
+  <a href="https://salman-h-khan.github.io/">Salman Khan</a><sup>1,4</sup>
+</p>
+
+<p align="center">
+  <sup>1</sup>Mohamed bin Zayed University of AI &nbsp;&nbsp;
+  <sup>2</sup>NUCES &nbsp;&nbsp;
+  <sup>3</sup>NUST &nbsp;&nbsp;
+  <sup>4</sup>Australian National University
+</p>
+
+<p align="center">
+  <sup>*</sup>Equal Contribution
 </p>
 
 <p align="center">
@@ -22,7 +44,7 @@
 **DuwatBench** is a comprehensive benchmark for evaluating multimodal large language models (LMMs) on Arabic calligraphy recognition. Arabic calligraphy represents one of the richest visual traditions of the Arabic language, blending linguistic meaning with artistic form. DuwatBench addresses the gap in evaluating how well modern AI systems can process stylized Arabic text.
 
 <p align="center">
-  <img src="docs/assets/taxonomy.png" alt="DuwatBench Taxonomy" width="800"/>
+  <img src="docs/assets/teaser.png" alt="DuwatBench Teaser" width="800"/>
 </p>
 
 ### Key Features
@@ -35,14 +57,14 @@
 
 ### Calligraphic Styles
 
-| Style | Samples | Description |
-|-------|---------|-------------|
-| **Thuluth** | 699 | Ornate script used in mosque decorations |
-| **Diwani** | 258 | Flowing Ottoman court script |
-| **Kufic** | 62 | Geometric angular early Arabic script |
-| **Naskh** | 15 | Standard readable script |
-| **Ruq'ah** | 10 | Modern everyday handwriting |
-| **Nasta'liq** | 6 | Persian-influenced flowing script |
+| Style | Arabic | Samples | Description |
+|-------|--------|---------|-------------|
+| **Thuluth** | الثلث | 699 (67%) | Ornate script used in mosque decorations |
+| **Diwani** | الديواني | 258 (24%) | Flowing Ottoman court script |
+| **Kufic** | الكوفي | 62 (6%) | Geometric angular early Arabic script |
+| **Naskh** | النسخ | 15 (1%) | Standard readable script |
+| **Ruq'ah** | الرقعة | 10 (1%) | Modern everyday handwriting |
+| **Nasta'liq** | النستعليق | 6 (1%) | Persian-influenced flowing script |
 
 ---
 
@@ -110,16 +132,23 @@ Each sample in the JSONL manifest contains:
   "texts": ["صَدَقَ اللَّهُ الْعَظِيمُ"],
   "word_count": [3],
   "total_words": 3,
-  "bboxes": [[34, 336, 900, 312]]
+  "bboxes": [[34, 336, 900, 312]],
+  "theme": "quranic"
 }
 ```
 
 ### Dataset Statistics
 
-- **Total Samples**: 1,050
-- **Total Words**: ~1,400
-- **Styles**: 6 (Thuluth, Diwani, Kufic, Naskh, Ruq'ah, Nasta'liq)
-- **Themes**: Non-religious (45%), Quranic (22%), Devotional (20%), Names (12%)
+| Category | Count |
+|----------|-------|
+| Total Samples | 1,050 |
+| Total Words | ~1,400 |
+| Calligraphy Styles | 6 |
+| Non-religious | 45.1% |
+| Quranic | 22.3% |
+| Devotional | 20.0% |
+| Names of Prophet/Companions | 8.1% |
+| Names of Allah | 4.2% |
 
 ---
 
@@ -144,31 +173,29 @@ python src/evaluate.py --model claude-sonnet-4.5 --mode full_image --resume
 ### Supported Models (13 Total)
 
 #### Open-Source (8)
-| Model | CER | WER | chrF | ExactMatch |
-|-------|-----|-----|------|------------|
-| gemma-3-27b-it | 0.637 | 0.768 | 38.83 | 0.324 |
-| MBZUAI/AIN* | 0.669 | 0.819 | 22.08 | 0.227 |
-| Qwen2.5-VL-72B-Instruct | 0.697 | 0.859 | 29.26 | 0.243 |
-| Qwen2.5-VL-7B | 0.650 | 0.808 | 19.17 | 0.207 |
-| InternVL3-8B | 0.746 | 0.878 | 10.33 | 0.119 |
-| EasyOCR | 0.786 | 1.021 | 7.74 | 0.019 |
-| trocr-base-arabic-handwritten* | 1.034 | 1.044 | 0.76 | 0.000 |
-| Llava-v1.6-mistral-7b-hf | 1.096 | 1.787 | 0.48 | 0.006 |
+| Model | CER ↓ | WER ↓ | chrF ↑ | ExactMatch ↑ | NLD ↓ |
+|-------|-------|-------|--------|--------------|-------|
+| Gemma-3-27B-IT | 0.637 | 0.768 | 38.83 | 0.324 | 0.419 |
+| Qwen2.5-VL-7B | 0.650 | 0.808 | 19.17 | 0.207 | 0.667 |
+| MBZUAI/AIN* | 0.669 | 0.819 | 22.08 | 0.227 | 0.499 |
+| Qwen2.5-VL-72B | 0.697 | 0.859 | 29.26 | 0.243 | 0.535 |
+| InternVL3-8B | 0.746 | 0.878 | 10.33 | 0.119 | 0.669 |
+| EasyOCR | 0.786 | 1.021 | 7.74 | 0.019 | 0.766 |
+| TrOCR-Arabic* | 1.034 | 1.044 | 0.76 | 0.000 | 0.969 |
+| LLaVA-v1.6-Mistral-7B | 1.096 | 1.787 | 0.48 | 0.006 | 0.911 |
 
 #### Closed-Source (5)
-| Model | CER | WER | chrF | ExactMatch |
-|-------|-----|-----|------|------------|
-| **gemini-2.5-flash** | **0.316** | **0.416** | **59.96** | **0.561** |
-| gpt-4o-mini | 0.533 | 0.683 | 27.70 | 0.355 |
-| gpt-4o | 0.830 | 0.980 | 17.12 | 0.186 |
-| gemini-1.5-flash | 0.912 | 1.026 | 41.93 | 0.244 |
-| claude-sonnet-4.5 | 1.181 | 1.080 | 27.63 | 0.338 |
+| Model | CER ↓ | WER ↓ | chrF ↑ | ExactMatch ↑ | NLD ↓ |
+|-------|-------|-------|--------|--------------|-------|
+| **Gemini-2.5-flash** | **0.316** | **0.416** | **59.96** | **0.561** | **0.217** |
+| GPT-4o-mini | 0.533 | 0.683 | 27.70 | 0.355 | 0.403 |
+| GPT-4o | 0.830 | 0.980 | 17.12 | 0.186 | 0.621 |
+| Gemini-1.5-flash | 0.912 | 1.026 | 41.93 | 0.244 | 0.497 |
+| Claude-Sonnet-4.5 | 1.181 | 1.080 | 27.63 | 0.338 | 0.429 |
 
 *\* Arabic-specific models*
 
 ### Evaluation Metrics
-
-Following standard OCR evaluation practices, we use five complementary metrics:
 
 | Metric | Description |
 |--------|-------------|
@@ -182,21 +209,20 @@ Following standard OCR evaluation practices, we use five complementary metrics:
 
 ## Results
 
-### Full Image Evaluation (Table 2)
+### Key Findings
 
-<p align="center">
-  <img src="docs/figures/table2_full_image.png" alt="Full Image Results" width="700"/>
-</p>
+- **Gemini-2.5-flash** achieves the best overall performance with 56.1% exact match accuracy
+- Models perform best on **Naskh** and **Ruq'ah** (standardized strokes)
+- **Diwani** and **Thuluth** (ornate scripts with dense ligatures) remain challenging
+- Bounding box localization improves performance across most models
 
-### With Bounding Box Evaluation (Table 3)
+### Per-Style WER Performance
 
-<p align="center">
-  <img src="docs/figures/table3_with_bbox.png" alt="Bounding Box Results" width="700"/>
-</p>
-
-### Per-Style Performance (Table 4)
-
-Models perform best on **Naskh** and **Ruq'ah** (standardized strokes), while **Diwani** and **Thuluth** (ornate scripts with dense ligatures) remain challenging.
+| Model | Kufic | Thuluth | Diwani | Naskh | Ruq'ah | Nasta'liq |
+|-------|-------|---------|--------|-------|--------|-----------|
+| Gemini-2.5-flash | 0.440 | 0.372 | 0.473 | 0.108 | 0.433 | 2.692 |
+| Gemma-3-27B-IT | 0.487 | 0.772 | 0.813 | 0.255 | 0.194 | 0.825 |
+| MBZUAI/AIN | 0.856 | 0.801 | 0.932 | 0.205 | 0.056 | 1.233 |
 
 ---
 
@@ -208,60 +234,26 @@ DuwatBench/
 ├── requirements.txt
 ├── setup.py
 ├── LICENSE
+├── CITATION.cff
 ├── data/
 │   ├── images/                    # Calligraphy images
 │   └── duwatbench.jsonl          # Dataset manifest
 ├── src/
 │   ├── evaluate.py               # Main evaluation script
 │   ├── models/
-│   │   ├── __init__.py
 │   │   └── model_wrapper.py      # Model implementations
 │   ├── metrics/
-│   │   ├── __init__.py
 │   │   └── evaluation_metrics.py # CER, WER, chrF, etc.
 │   ├── utils/
-│   │   ├── __init__.py
 │   │   ├── data_loader.py        # Dataset loading
 │   │   └── arabic_normalization.py
 │   └── config/
-│       ├── __init__.py
 │       ├── eval_config.py
 │       └── api_keys.example.py
 ├── scripts/
 │   ├── download_data.sh
 │   └── run_all_evaluations.sh
-├── results/                       # Evaluation outputs
-└── docs/                          # GitHub Pages website
-    ├── index.html
-    └── assets/
-```
-
----
-
-## Adding New Models
-
-To evaluate a new model, implement the `BaseModel` interface:
-
-```python
-from src.models.model_wrapper import BaseModel
-
-class MyNewModel(BaseModel):
-    def __init__(self):
-        super().__init__("my-new-model")
-        # Initialize your model
-
-    def transcribe(self, image, prompt=None):
-        # Return Arabic text transcription
-        return "النص العربي"
-```
-
-Then register it in `model_wrapper.py`:
-
-```python
-model_map = {
-    # ... existing models ...
-    "my-new-model": lambda: MyNewModel(),
-}
+└── results/                       # Evaluation outputs
 ```
 
 ---
@@ -272,9 +264,12 @@ If you use DuwatBench in your research, please cite our paper:
 
 ```bibtex
 @article{duwatbench2025,
-  title={DuwatBench: Bridging Language and Visual Heritage through an Arabic Calligraphy Benchmark for Multimodal Understanding},
-  author={Anonymous},
-  journal={ACL},
+  title={DuwatBench: Bridging Language and Visual Heritage through an
+         Arabic Calligraphy Benchmark for Multimodal Understanding},
+  author={Patle, Shubham and Ghaboura, Sara and Tariq, Hania and
+          Khan, Mohammad Usman and Thawakar, Omkar and
+          Anwer, Rao Muhammad and Khan, Salman},
+  journal={arXiv preprint arXiv:XXXX.XXXXX},
   year={2025}
 }
 ```
@@ -301,10 +296,12 @@ The dataset images are sourced from public digital archives and community reposi
 
 For questions or issues, please:
 - Open an issue on [GitHub](https://github.com/mbzuai-oryx/DuwatBench/issues)
-- Contact the authors at: duwatbench@mbzuai.ac.ae
+- Contact the authors at: {shubham.patle, sara.ghaboura, omkar.thawakar}@mbzuai.ac.ae
 
 ---
 
 <p align="center">
-  Made with ❤️ at <a href="https://mbzuai.ac.ae">MBZUAI</a>
+  <a href="https://mbzuai.ac.ae"><img src="docs/assets/mbzuai_logo.png" height="50" alt="MBZUAI"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/mbzuai-oryx"><img src="docs/assets/oryx_logo.png" height="50" alt="Oryx"></a>
 </p>
